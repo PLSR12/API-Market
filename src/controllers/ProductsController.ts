@@ -21,7 +21,7 @@ class ProductsController {
       const allProducts = await productsService.getAll()
 
       return res
-        .status(201)
+        .status(200)
         .send(Helper.ResponseData(201, null, null, allProducts))
     } catch (error) {
       return res.status(500).send(Helper.ResponseData(500, '', error, null))
