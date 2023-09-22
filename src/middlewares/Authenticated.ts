@@ -6,12 +6,16 @@ dotenv.config()
 
 const secret = process.env.SECRET_AUTH as string
 
-const Authenticated = async (req: Request, res: Response, next: NextFunction) => {
+const Authenticated = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const token = req.headers.authorization
 
   if (!token) {
     return res.status(401).send({
-      message: 'Token não informado',
+      message: 'Token not provided',
     })
   }
 
@@ -23,7 +27,7 @@ const Authenticated = async (req: Request, res: Response, next: NextFunction) =>
     return next()
   } catch {
     res.status(401).send({
-      message: 'Usuário não autorizado',
+      message: 'User not authorized',
     })
   }
 }
