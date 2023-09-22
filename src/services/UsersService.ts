@@ -3,6 +3,8 @@ import { v4 } from 'uuid'
 import Users, { UserInput } from '../db/models/users'
 import { Optional } from 'sequelize'
 import DtoId from '../interfaces/IDto'
+import Roles from '../db/models/roles'
+import Permissions from '../db/models/permissions'
 
 interface IUserInputUpdate extends Optional<UserInput, 'password'> {
   id: string
@@ -35,13 +37,34 @@ class UsersService {
     }
   }
   async getAll() {
-    const allUser = await Users.findAll()
+    const allUser = await Users.findAll({
+      include: [
+        {
+          model: Roles,
+          as: 'user_roles',
+          attributes: ['id', 'name', 'description'],
+          through: {
+            attributes: [],
+          },
+        },
+        {
+          model: Permissions,
+          as: 'user_permissions',
+          attributes: ['id', 'name', 'description'],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    })
 
     return allUser
   }
 
   async getById(dto: DtoId) {
-    const user = await Users.findOne({ where: { id: dto.id } })
+    const user = await Users.findOne({
+      where: { id: dto.id },
+    })
 
     if (!user) {
       throw new Error('User not found')
